@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-public static class Calculator
+
 
 
 namespace CleanCalc
 {
-    public class CalcHistoryEntry
+    public static class CalcHistoryEntry
     {
         public double A { get; }
         public double B { get; }
@@ -199,4 +199,5 @@ namespace CleanCalc
         }
     }
 }
+
 
