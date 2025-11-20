@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+public static class Calculator
+
 
 namespace CleanCalc
 {
@@ -37,7 +39,8 @@ namespace CleanCalc
 
         public static double Divide(double a, double b)
         {
-            if (b == 0)
+            if (Math.Abs(b) < 1e-12)
+
                 throw new DivideByZeroException("No se puede dividir entre cero.");
             return a / b;
         }
@@ -196,3 +199,4 @@ namespace CleanCalc
         }
     }
 }
+
