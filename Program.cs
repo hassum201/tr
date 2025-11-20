@@ -7,7 +7,7 @@ using System.IO;
 
 namespace CleanCalc
 {
-    public static class CalcHistoryEntry
+    public class CalcHistoryEntry
     {
         public double A { get; }
         public double B { get; }
@@ -31,7 +31,7 @@ namespace CleanCalc
     /// <summary>
     /// Calculator with safe, validated operations.
     /// </summary>
-    public static class Calculator   // ← CAMBIADO A STATIC
+    public static class Calculator  
     {
         public static double Add(double a, double b) => a + b;
         public static double Subtract(double a, double b) => a - b;
@@ -199,6 +199,7 @@ namespace CleanCalc
         }
     }
 }
+
 
 
 
