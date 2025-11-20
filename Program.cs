@@ -1,201 +1,41 @@
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
+using System;
 
 namespace CleanCalc
 {
-    public class CalcHistoryEntry
-    {
-        public double A { get; }
-        public double B { get; }
-        public string Operator { get; }
-        public double Result { get; }
-
-        public CalcHistoryEntry(double a, double b, string op, double result)
-        {
-            A = a;
-            B = b;
-            Operator = op;
-            Result = result;
-        }
-
-        public override string ToString()
-        {
-            return $"{A}|{B}|{Operator}|{Result}";
-        }
-    }
-
     /// <summary>
     /// Calculator with safe, validated operations.
     /// </summary>
-    public class Calculator
+    public static class Calculator
     {
-        public double Add(double a, double b) => a + b;
-        public double Subtract(double a, double b) => a - b;
-        public double Multiply(double a, double b) => a * b;
+        public static double Add(double a, double b) => a + b;
 
-        public double Divide(double a, double b)
+        public static double Subtract(double a, double b) => a - b;
+
+        public static double Multiply(double a, double b) => a * b;
+
+        public static double Divide(double a, double b)
         {
             if (b == 0)
                 throw new DivideByZeroException("No se puede dividir entre cero.");
+
             return a / b;
         }
 
-        public double Power(double a, double b) => Math.Pow(a, b);
-        public double Mod(double a, double b) => a % b;
+        public static double Power(double a, double b) => Math.Pow(a, b);
 
-        public double Sqrt(double a)
+        public static double Mod(double a, double b) => a % b;
+
+        public static double Sqrt(double a)
         {
             if (a < 0)
                 throw new ArgumentException("No se puede hacer raíz cuadrada de un número negativo.");
+
             return Math.Sqrt(a);
         }
     }
-
-    /// <summary>
-    /// Main program class with clear menu and history.
-    /// </summary>
-    internal class Program
-    {
-        private static readonly Calculator Calc = new Calculator();
-        private static readonly List<CalcHistoryEntry> History = new List<CalcHistoryEntry>();
-
-        static void Main()
-        {
-            bool exit = false;
-
-            while (!exit)
-            {
-                PrintMenu();
-                Console.Write("Opción: ");
-                string opt = Console.ReadLine()?.Trim();
-
-                switch (opt)
-                {
-                    case "1": HandleBinaryOperation("+", Calc.Add); break;
-                    case "2": HandleBinaryOperation("-", Calc.Subtract); break;
-                    case "3": HandleBinaryOperation("*", Calc.Multiply); break;
-                    case "4": HandleBinaryOperation("/", Calc.Divide); break;
-                    case "5": HandleBinaryOperation("^", Calc.Power); break;
-                    case "6": HandleBinaryOperation("%", Calc.Mod); break;
-                    case "7": HandleUnaryOperation("sqrt", Calc.Sqrt); break;
-                    case "8": Console.WriteLine("Función LLM eliminada por seguridad."); break;
-                    case "9": ShowHistory(); break;
-                    case "0": exit = true; break;
-
-                    default:
-                        Console.WriteLine("Opción inválida.");
-                        break;
-                }
-
-                Console.WriteLine();
-            }
-
-            SaveHistoryToFile();
-            Console.WriteLine("Adiós.");
-        }
-
-        private static void PrintMenu()
-        {
-            Console.WriteLine("=== CLEAN CALCULATOR ===");
-            Console.WriteLine("1) Sumar");
-            Console.WriteLine("2) Restar");
-            Console.WriteLine("3) Multiplicar");
-            Console.WriteLine("4) Dividir");
-            Console.WriteLine("5) Potencia");
-            Console.WriteLine("6) Módulo");
-            Console.WriteLine("7) Raíz cuadrada");
-            Console.WriteLine("8) LLM (deshabilitado)");
-            Console.WriteLine("9) Historial");
-            Console.WriteLine("0) Salir");
-        }
-
-        private static void HandleBinaryOperation(string opSymbol, Func<double, double, double> operation)
-        {
-            try
-            {
-                double a = ReadDouble("a: ");
-                double b = ReadDouble("b: ");
-
-                double result = operation(a, b);
-
-                Console.WriteLine($"= {result.ToString(CultureInfo.InvariantCulture)}");
-
-                AddToHistory(a, b, opSymbol, result);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
-        }
-
-        private static void HandleUnaryOperation(string opSymbol, Func<double, double> operation)
-        {
-            try
-            {
-                double a = ReadDouble("a: ");
-
-                double result = operation(a);
-
-                Console.WriteLine($"= {result.ToString(CultureInfo.InvariantCulture)}");
-
-                AddToHistory(a, 0, opSymbol, result);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
-        }
-
-        private static double ReadDouble(string label)
-        {
-            while (true)
-            {
-                Console.Write(label);
-                string input = Console.ReadLine()?.Replace(',', '.');
-
-                if (double.TryParse(input, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
-                    return value;
-
-                Console.WriteLine("Entrada inválida. Intente nuevamente.");
-            }
-        }
-
-        private static void AddToHistory(double a, double b, string op, double result)
-        {
-            var entry = new CalcHistoryEntry(a, b, op, result);
-            History.Add(entry);
-
-            File.AppendAllText("history.txt", entry + Environment.NewLine);
-        }
-
-        private static void ShowHistory()
-        {
-            Console.WriteLine("--- Historial ---");
-
-            if (History.Count == 0)
-            {
-                Console.WriteLine("No hay operaciones.");
-                return;
-            }
-
-            foreach (var entry in History)
-                Console.WriteLine(entry);
-        }
-
-        private static void SaveHistoryToFile()
-        {
-            try
-            {
-                File.WriteAllLines("leftover.tmp", History.ConvertAll(h => h.ToString()));
-            }
-            catch
-            {
-                Console.WriteLine("No se pudo guardar leftover.tmp");
-            }
-        }
-    }
 }
+
+
 
 
