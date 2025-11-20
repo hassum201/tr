@@ -5,6 +5,57 @@ using System.IO;
 
 namespace CleanCalc
 {
+    public class CalcHistoryEntry
+    {
+        public double A { get; }
+        public double B { get; }
+        public string Operator { get; }
+        public double Result { get; }
+
+        public CalcHistoryEntry(double a, double b, string op, double result)
+        {
+            A = a;
+            B = b;
+            Operator = op;
+            Result = result;
+        }
+
+        public override string ToString()
+        {
+            return $"{A}|{B}|{Operator}|{Result}";
+        }
+    }
+
+    /// <summary>
+    /// Calculator with safe, validated operations.
+    /// </summary>
+    public static class Calculator   // ← CAMBIADO A STATIC
+    {
+        public static double Add(double a, double b) => a + b;
+        public static double Subtract(double a, double b) => a - b;
+        public static double Multiply(double a, double b) => a * b;
+
+        public static double Divide(double a, double b)
+        {
+            if (b == 0)
+                throw new DivideByZeroException("No se puede dividir entre cero.");
+            return a / b;
+        }
+
+        public static double Power(double a, double b) => Math.Pow(a, b);
+        public static double Mod(double a, double b) => a % b;
+
+        public static double Sqrt(double a)
+        {
+            if (a < 0)
+                throw new ArgumentException("No se puede hacer raíz cuadrada de un número negativo.");
+            return Math.Sqrt(a);
+        }
+    }
+
+    /// <summary>
+    /// Main program class with clear menu and history.
+    /// </summary>
     internal class Program
     {
         private static readonly List<CalcHistoryEntry> History = new List<CalcHistoryEntry>();
@@ -17,7 +68,6 @@ namespace CleanCalc
             {
                 PrintMenu();
                 Console.Write("Opción: ");
-
                 string opt = Console.ReadLine()?.Trim();
 
                 switch (opt)
@@ -66,6 +116,7 @@ namespace CleanCalc
             {
                 double a = ReadDouble("a: ");
                 double b = ReadDouble("b: ");
+
                 double result = operation(a, b);
 
                 Console.WriteLine($"= {result.ToString(CultureInfo.InvariantCulture)}");
@@ -83,6 +134,7 @@ namespace CleanCalc
             try
             {
                 double a = ReadDouble("a: ");
+
                 double result = operation(a);
 
                 Console.WriteLine($"= {result.ToString(CultureInfo.InvariantCulture)}");
@@ -144,9 +196,3 @@ namespace CleanCalc
         }
     }
 }
-
-
-
-
-
-
